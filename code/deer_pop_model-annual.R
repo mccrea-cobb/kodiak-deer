@@ -56,12 +56,14 @@ cat("
     
     # System process
     for (t in 2:nyears){  
-      N[1,t] ~ dpois((Nbf[t]) + f[t])                   # Fawn abundance at time t+1
-      N[2,t] ~ dbin(sf[t-1], N[1,t-1])                  # Yearling abundance at time t+1
-      Nfy[t] <- dbin(0.5, N[2,t])                   # Yearling female abundance at time t (to estimate fawn abundance)
-      Nmy[t] <- 1 - Nfy[t]                          # Yearling male abundance at time t
-      N[3,t] ~ dbin(saf[t-1], (Nfy[t-1] + N[3,t-1]))    # Adult female abundance at time t+1 (adult survival at time t * cow and female yearling abundance at time t, adjusted for removals)
-      N[4,t] ~ dbin(sam[t-1], (Nmy[t-1] + N[4,t-1]))    # Adult male abundance at time t+1 (adult survival * bull and male yearling abundance at time t, adjusted for removals)
+      N[1,t] ~ dpois((Nbf[t]) * f[t])                   # Newborn fawn abundance (spring) at time t (surviving breeding females*fecundity rate)
+      
+      N[2,t] ~ dbin(sf[t-1], N[1,t-1])                  # Yearling abundance at time t (fawns at t-1 that survived)
+      Nfy[t] <- dbin(0.5, N[2,t])                       # Yearling female abundance at time t (to estimate fawn abundance and adult females)
+      Nmy[t] <- 1 - Nfy[t]                              # Yearling male abundance at time t (to estimate adult males)
+      
+      N[3,t] ~ dbin(saf[t-1], (Nfy[t-1] + N[3,t-1]))    # Adult female abundance at time t (adult female survival at time t-1 * cow and female yearling abundance at time t, adjusted for removals)
+      N[4,t] ~ dbin(sam[t-1], (Nmy[t-1] + N[4,t-1]))    # Adult male abundance at time t (adult male survival at time t-1 * bull and male yearling abundance at time t, adjusted for removals)
     }
     
     
@@ -159,7 +161,7 @@ nt <- 10
 
 nclasses <-  nrow(C) # age classes
 nyears <- ncol(C[1,,])  # years
-nsurveys <- 3  # survey replicates (only look at 3 of 4 reps)
+nsurveys <- 3  # survey replicates
 
 # Calculate psi (for dcat distribution), based on the max value (count) in each row (plot) for each dimension (year)
 maxCyear1 <- apply(C, c(1,3), max, na.rm = T)[,1]   # Max counts/plot in year 1

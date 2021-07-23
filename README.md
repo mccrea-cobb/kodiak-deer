@@ -1,3 +1,5 @@
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+
 # Kodiak Deer  
 Models for planning Sitka black-tailed deer surveys at Kodiak National Wildlife Refuge.
 
